@@ -11,7 +11,12 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080",  nil))
 }
 
-func handle(w http.ResponseWriter, _ *http.Request) {
+func handle(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Query().Get("name")
+	if name == "" {
+		name = "World"
+	}
+
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, "Hello World!")
+	fmt.Fprintf(w, "Hello, %s!", name)
 }
