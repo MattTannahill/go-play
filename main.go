@@ -11,7 +11,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080",  nil))
 }
 
-func handle(w http.ResponseWriter, r *http.Request) {
+func handle(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	fmt.Fprint(w, "Hello World!")
 }
