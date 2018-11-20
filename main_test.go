@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -16,12 +16,7 @@ func TestRootReturnsOk(t *testing.T) {
 func TestRootContentTypeHeader(t *testing.T) {
 	resp := get(t, nil)
 	v := resp.Header.Get("Content-Type")
-	assert(t,"text/html", v)
-}
-
-func TestRootContentLength(t *testing.T) {
-	c := getAndDeserialize(t, nil)
-	assert(t, "Hello, World!", c)
+	assert(t,"application/json", v)
 }
 
 func TestRootParameters(t *testing.T) {
@@ -29,26 +24,27 @@ func TestRootParameters(t *testing.T) {
 		given Parameters
 		want string
 	}{
+		{given: Parameters{}, want: "Hello, World!"},
 		{given: Parameters{greeting: "Sup"}, want: "Sup, World!"},
 		{given: Parameters{name: "Matt"}, want: "Hello, Matt!"},
 		{given: Parameters{greeting: "Sup", name: "Matt"}, want: "Sup, Matt!"},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.want, func(t *testing.T) {
-			c := getAndDeserialize(t, &tc.given)
+			c := getMessage(t, &tc.given)
 			assert(t, tc.want, c)
 		})
 	}
 }
 
-func getAndDeserialize(t *testing.T, p *Parameters) string {
-	resp := get(t, p)
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+func getMessage(t *testing.T, p *Parameters) string {
+	r := get(t, p)
+	decoder := json.NewDecoder(r.Body)
+	var b Body
+	if err := decoder.Decode(&b); err != nil {
 		log.Fatal(err)
 	}
-	c := string(b)
-	return c
+	return b.Message
 }
 
 func get(t *testing.T, p *Parameters) *http.Response {

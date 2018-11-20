@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,8 +15,12 @@ func main() {
 func handle(w http.ResponseWriter, r *http.Request) {
 	greeting := getParameterOrFallback(r, "greeting", "Hello")
 	name := getParameterOrFallback(r, "name", "World")
-	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintf(w, "%s, %s!", greeting, name)
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(Body{
+		Message: fmt.Sprintf("%s, %s!", greeting, name),
+	}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func getParameterOrFallback(r *http.Request, key, fallback string) string {
@@ -24,4 +29,8 @@ func getParameterOrFallback(r *http.Request, key, fallback string) string {
 		v = fallback
 	}
 	return v
+}
+
+type Body struct {
+	Message string
 }
