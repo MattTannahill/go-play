@@ -12,11 +12,16 @@ func main() {
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
-	name := r.URL.Query().Get("name")
-	if name == "" {
-		name = "World"
-	}
-
+	greeting := getParameterOrFallback(r, "greeting", "Hello")
+	name := getParameterOrFallback(r, "name", "World")
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintf(w, "Hello, %s!", name)
+	fmt.Fprintf(w, "%s, %s!", greeting, name)
+}
+
+func getParameterOrFallback(r *http.Request, key, fallback string) string {
+	v := r.URL.Query().Get(key)
+	if v == "" {
+		v = fallback
+	}
+	return v
 }
