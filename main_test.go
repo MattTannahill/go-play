@@ -1,6 +1,8 @@
 package main
 
 import (
+	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -25,6 +27,18 @@ func TestRootContentTypeHeader(t *testing.T) {
 	v := resp.Header.Get("Content-Type")
 	if v != "text/html" {
 		t.Fatalf("want application/json, got %s", v)
+	}
+}
+
+func TestRootContentLength(t *testing.T) {
+	resp := get(t)
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	c := string(b)
+	if c != "Hello World!" {
+		t.Fatalf("want Hello World!, got %s", c)
 	}
 }
 
