@@ -8,26 +8,15 @@ import (
 	"testing"
 )
 
-func TestRootExists(t *testing.T) {
-	resp := get(t)
-	if resp.StatusCode == 404 {
-		t.Fatalf("want 404, got %d", resp.StatusCode)
-	}
-}
-
 func TestRootReturnsOk(t *testing.T) {
 	resp := get(t)
-	if resp.StatusCode != 200 {
-		t.Fatalf("want 200, got %d", resp.StatusCode)
-	}
+	assert(t, 200, resp.StatusCode)
 }
 
 func TestRootContentTypeHeader(t *testing.T) {
 	resp := get(t)
 	v := resp.Header.Get("Content-Type")
-	if v != "text/html" {
-		t.Fatalf("want application/json, got %s", v)
-	}
+	assert(t,"text/html", v)
 }
 
 func TestRootContentLength(t *testing.T) {
@@ -37,9 +26,7 @@ func TestRootContentLength(t *testing.T) {
 		log.Fatal(err)
 	}
 	c := string(b)
-	if c != "Hello World!" {
-		t.Fatalf("want Hello World!, got %s", c)
-	}
+	assert(t,"Hello World!", c)
 }
 
 func get(t *testing.T) *http.Response {
@@ -52,4 +39,10 @@ func get(t *testing.T) *http.Response {
 	}
 
 	return resp
+}
+
+func assert(t *testing.T, want interface{}, got interface{}) {
+	if want != got {
+		t.Fatalf("want %v, got %v", want, got)
+	}
 }
