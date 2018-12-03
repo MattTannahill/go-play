@@ -33,7 +33,7 @@ func getParameterOrFallback(r *http.Request, key, fallback string) string {
 }
 
 func getMessage(greeting, name string) string {
-	if strings.ToLower(greeting) == "sup" && strings.ToLower(name) == "son" {
+	if strings.EqualFold(greeting, "sup") && strings.EqualFold(name, "son") {
 		return "¯\\_(ツ)_/¯"
 	}
 	return fmt.Sprintf("%s, %s!", greeting, name)
