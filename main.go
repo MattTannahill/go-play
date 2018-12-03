@@ -15,7 +15,7 @@ func main() {
 
 func handle(w http.ResponseWriter, r *http.Request) {
 	greeting := getParameterOrFallback(r, "greeting", "Hello")
-	name := getParameterOrFallback(r, "name", "World")
+	name := getParameterOrFallback(r, "name", "世界")
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(Body{
 		Message: getMessage(greeting, name),

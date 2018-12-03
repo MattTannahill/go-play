@@ -25,10 +25,10 @@ func TestRootParameters(t *testing.T) {
 		given Parameters
 		want string
 	}{
-		{given: Parameters{}, want: "Hello, World!"},
-		{given: Parameters{greeting: "Sup"}, want: "Sup, World!"},
-		{given: Parameters{name: "Matt"}, want: "Hello, Matt!"},
-		{given: Parameters{greeting: "Sup", name: "Matt"}, want: "Sup, Matt!"},
+		{given: Parameters{}, want: "Hello, 世界!"},
+		{given: Parameters{greeting: "Sup"}, want: "Sup, 世界!"},
+		{given: Parameters{name: "World"}, want: "Hello, World!"},
+		{given: Parameters{greeting: "Sup", name: "World"}, want: "Sup, World!"},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.want, func(t *testing.T) {
