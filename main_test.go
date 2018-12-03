@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -31,13 +32,28 @@ func TestRootParameters(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.want, func(t *testing.T) {
-			c := getMessage(t, &tc.given)
-			assert(t, tc.want, c)
+			m := getMessageForParameters(t, &tc.given)
+			assert(t, tc.want, m)
 		})
 	}
 }
 
-func getMessage(t *testing.T, p *Parameters) string {
+func TestEasterEgg(t *testing.T) {
+	parameters := []Parameters{
+		{greeting: "Sup", name: "Son"},
+		{greeting: "Sup", name: "son"},
+		{greeting: "sup", name: "Son"},
+		{greeting: "sup", name: "son"},
+	}
+	for _, p := range parameters {
+		t.Run(fmt.Sprintf("%s, %s!", p.greeting, p.name), func(t *testing.T) {
+			m := getMessageForParameters(t, &p)
+			assert(t, "¯\\_(ツ)_/¯", m)
+		})
+	}
+}
+
+func getMessageForParameters(t *testing.T, p *Parameters) string {
 	r := get(t, p)
 	decoder := json.NewDecoder(r.Body)
 	var b Body
