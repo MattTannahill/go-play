@@ -24,11 +24,11 @@ func handle(w http.ResponseWriter, r *http.Request) {
 }
 
 func getParameterOrFallback(r *http.Request, key, fallback string) string {
-	v := r.URL.Query().Get(key)
-	if v == "" {
-		v = fallback
+	value := r.URL.Query().Get(key)
+	if value == "" {
+		value = fallback
 	}
-	return v
+	return value
 }
 
 type Body struct {
