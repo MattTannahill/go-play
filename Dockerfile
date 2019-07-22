@@ -1,9 +1,7 @@
-FROM library/golang:1.11.2
-
+FROM golang:1.12.7 as builder
 WORKDIR /go/src/app
 COPY . .
-
-RUN go get -d -v ./...
-RUN go install -v ./...
-
-CMD ["app"]
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o go-play main.go
+FROM scratch
+COPY --from=builder /go/src/app/go-play /go-play
+CMD ["./go-play"]
