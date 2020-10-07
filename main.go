@@ -5,17 +5,22 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
 func main() {
+        port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080";
+	}
+
 	http.HandleFunc("/", handle)
-	log.Fatal(http.ListenAndServe(":8080",  nil))
+	log.Fatal(http.ListenAndServe(":" + port,  nil))
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
-	greeting := getParameterOrFallback(r, "greeting", "Hello")
-	name := getParameterOrFallback(r, "name", "世界")
+	greeting, name := getParameterOrFallback(r, "greeting", "Hello"), getParameterOrFallback(r, "name", "世界")
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(Body{
 		Message: getMessage(greeting, name),
